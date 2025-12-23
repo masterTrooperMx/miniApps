@@ -18,7 +18,8 @@ async function login() {
 
     const data = await resp.json();
     saveSession(data);
-    redirectUser(data.user);
+    //redirectUser(data.user);
+    redirectUser();
 
   } catch (err) {
     errorBox.textContent = err.message;
@@ -43,7 +44,8 @@ async function loginWithGoogle() {
 
     const data = await resp.json();
     saveSession(data);
-    redirectUser(data.user);
+    //redirectUser(data.user);
+    redirectUser();
 
   } catch (err) {
     alert(err.message);
@@ -52,16 +54,18 @@ async function loginWithGoogle() {
 
 function saveSession(data) {
   localStorage.setItem("access_token", data.access_token);
-  localStorage.setItem("user", JSON.stringify(data.user));
+  //localStorage.setItem("user", JSON.stringify(data.user));
 }
 
-function redirectUser(user) {
+//function redirectUser(user) {
+function redirectUser() {
   // Ejemplo de control por suscripción
-  if (user.subscription === "free") {
-    window.location.href = "/app.html";
-  } else {
-    window.location.href = "/app.html";
-  }
+  //if (user.subscription === "free") {
+  //  window.location.href = "/app.html";
+  //} else {
+  //  window.location.href = "/app.html";
+  //}
+  window.location.href = "/base.html";
 }
 
 async function handleGoogleLogin(response) {
@@ -86,8 +90,9 @@ async function handleGoogleLogin(response) {
     const data = await resp.json();
 
     // Guardar sesión propia
+    //localStorage.setItem("access_token", data.access_token);
+    //localStorage.setItem("user", JSON.stringify(data.user));
     localStorage.setItem("access_token", data.access_token);
-    localStorage.setItem("user", JSON.stringify(data.user));
 
     // Redirigir
     window.location.href = "/base.html";
@@ -97,3 +102,16 @@ async function handleGoogleLogin(response) {
     alert("No se pudo iniciar sesión con Google");
   }
 }
+
+function parseJwt(token) {
+  try {
+    return JSON.parse(atob(token.split(".")[1]));
+  } catch {
+    return null;
+  }
+}
+
+const token = localStorage.getItem("access_token");
+const user = token ? parseJwt(token) : null;
+
+console.log(user.email, user.subscription);

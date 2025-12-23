@@ -50,10 +50,12 @@ def google_login(
         data={
             "sub": str(user.id),                 # 🔑 CLAVE
             "email": user.email,
-            "subscription": user.subscription
+            "subscription": user.subscription_level
         }
     )
 
+    print(access_token)
+    
     return {
         "access_token": access_token,
         "token_type": "bearer"

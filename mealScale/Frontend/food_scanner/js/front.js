@@ -295,8 +295,15 @@ document.addEventListener("DOMContentLoaded", () => {
   ----------------------------------------------------- */
 
 function getCurrentUser() {
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
+  const token = localStorage.getItem("access_token");
+  if (!token) return null;
+
+  try {
+    return JSON.parse(atob(token.split(".")[1]));
+  } catch (e) {
+    console.error("Invalid token", e);
+    return null;
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {

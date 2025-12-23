@@ -23,7 +23,16 @@ docker-compose up
 cada vez que construimos el servicio.
 
 ## Uso
-Ejemplos de endpoints o comandos.
+Prueba de interfaz login con imagen
+```
+curl -X POST http://localhost:8000/api/v1/analyze \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxI…IwN30.tzjWk0lYtKRoh6A52lujx5IDGP52POrlh4ZpI8JmrRc" \
+  -F "image=@WhatsApp Image 2025-12-22 at 23.45.38.jpeg" \
+  -F "description=rebanada pizza pepperoni" \
+  -F "goal=completa" \
+  -F "amount=1" \
+  -F "unit=portion"
+```
 
 ## Autor
 Jesús E. Cruz Mtz, Dic 2025
