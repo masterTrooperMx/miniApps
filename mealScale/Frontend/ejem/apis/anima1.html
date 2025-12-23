@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Animación SVG con GSAP (sin DrawSVGPlugin)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    svg {
+      width: 80%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .path {
+      stroke: #00ffcc;
+      stroke-width: 5;
+      fill: none;
+      stroke-dasharray: 1000; /* largo del trazo */
+      stroke-dashoffset: 1000; /* inicio oculto */
+    }
+
+    .ball {
+      fill: #ffcc00;
+      stroke: #fff;
+      stroke-width: 2;
+    }
+  </style>
+</head>
+<body>
+
+  <svg viewBox="0 0 800 400">
+    <!-- Línea principal -->
+    <path id="mainPath" class="path" d="M50 300 C 250 100, 550 100, 750 300" />
+
+    <!-- Bolas -->
+    <circle class="ball" cx="150" cy="300" r="10" />
+    <circle class="ball" cx="350" cy="300" r="10" />
+    <circle class="ball" cx="550" cy="300" r="10" />
+    <circle class="ball" cx="700" cy="300" r="10" />
+  </svg>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+  <script>
+    const selectAll = e => document.querySelectorAll(e);
+    const nodeListToArray = n => Array.prototype.slice.call(n);
+
+    const path = document.getElementById('mainPath');
+    const balls = nodeListToArray(selectAll('.ball'));
+
+    // Timeline principal
+    const tl = gsap.timeline({ repeat: -1, repeatDelay: 1 });
+    const offset = 0.2;
+
+    tl
+      // 1️⃣ Animar el trazo manualmente
+      .to(path, {
+        duration: 2,
+        strokeDashoffset: 0,
+        ease: 'power2.inOut'
+      })
+
+      // 2️⃣ Hacer rebotar las bolas
+      .staggerTo(balls.reverse(), 1, {
+        y: '+=120',
+        ease: 'bounce.out'
+      }, offset, '-=0.8')
+
+      // 3️⃣ Aplastar las bolas
+      .staggerTo(balls.reverse(), 0.1, {
+        scaleX: 1.2,
+        scaleY: 0.8,
+        ease: 'power2.in'
+      }, offset, '-=0.75')
+
+      // 4️⃣ Restaurar tamaño
+      .staggerTo(balls.reverse(), 0.1, {
+        scaleX: 1,
+        scaleY: 1
+      }, offset, '-=0.6');
+  </script>
+</body>
+</html>

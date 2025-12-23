@@ -1,0 +1,105 @@
+/* Estilo general */
+body {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+/* Navbar */
+.navbar-brand {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Encabezado principal */
+header {
+  background: linear-gradient(135deg, #0d6efd, #6610f2);
+  color: white;
+  padding: 4rem 1rem;
+}
+
+header h1 {
+  font-weight: 700;
+}
+
+header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+header .btn-warning {
+  font-weight: 600;
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  box-shadow: 0 0 12px rgba(255, 193, 7, 0.5);
+  transition: all 0.3s ease;
+}
+
+header .btn-warning:hover {
+  background-color: #ffca2c;
+  transform: scale(1.05);
+}
+
+/* Cards de servicios */
+.card {
+  border: none;
+  border-radius: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card h5 {
+  font-weight: 600;
+  color: #0d6efd;
+}
+
+/* Botones de selección */
+.select-btn {
+  border-radius: 25px;
+  padding: 0.4rem 1.2rem;
+  transition: all 0.2s ease;
+}
+
+.select-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Puntaje */
+#score {
+  font-weight: 700;
+  color: #ffc107;
+  font-size: 1.2rem;
+}
+
+/* Botón final */
+#finish {
+  font-weight: 600;
+  border-radius: 25px;
+  padding: 0.6rem 2rem;
+  box-shadow: 0 0 10px rgba(25, 135, 84, 0.4);
+  transition: all 0.3s ease;
+}
+
+#finish:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(25, 135, 84, 0.6);
+}
+
+/* Footer (opcional futuro) */
+footer {
+  background-color: #212529;
+  color: #bbb;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+}

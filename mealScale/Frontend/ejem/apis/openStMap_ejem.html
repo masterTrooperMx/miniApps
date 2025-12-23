@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Mapa con Ruta · OpenStreetMap + Leaflet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">Ruta con OpenStreetMap</a>
+    </div>
+  </nav>
+
+  <main class="container my-4">
+    <h1 class="h4 mb-3">Calcular ruta entre dos direcciones</h1>
+    <div class="row g-3">
+      <div class="col-lg-4">
+        <form id="routeForm" class="p-3 border rounded bg-white shadow-sm">
+          <div class="mb-3">
+            <label for="origen" class="form-label">Dirección de origen</label>
+            <input type="text" id="origen" class="form-control" value="Av Año de Juárez 332, Granjas San Antonio, C.P. 09070, CDMX" readonly>
+            <div class="form-text">Origen fijo</div>
+          </div>
+          <div class="mb-3">
+            <label for="destino" class="form-label">Dirección de destino</label>
+            <input type="text" id="destino" class="form-control" placeholder="Escribe la dirección de destino" required>
+          </div>
+          <button class="btn btn-primary w-100" type="submit">Mostrar ruta</button>
+        </form>
+      </div>
+      <div class="col-lg-8">
+        <div id="map"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-dark text-light text-center py-3">
+    <small>Ejemplo con OpenStreetMap + Leaflet · © 2025</small>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // Coordenadas aproximadas del origen fijo (CDMX)
+    const origenCoords = [19.373553, -99.099157];
+
+    // Inicializar el mapa
+    const map = L.map('map').setView(origenCoords, 13);
+
+    // Cargar tiles de OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    // Marcador de origen
+    L.marker(origenCoords).addTo(map).bindPopup("Origen fijo: Av Año de Juárez 332, CDMX");
+
+    // Capa para la ruta
+    let routeLayer;
+
+    // Función para buscar coordenadas con Nominatim (geocoding OSM)
+    async function getCoords(address) {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+      const data = await res.json();
+      if (data.length > 0) {
+        return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+      }
+      return null;
+    }
+
+    // Función para mostrar la ruta
+    async function showRoute(destino) {
+      const destinoCoords = await getCoords(destino);
+      if (!destinoCoords) {
+        alert("No se encontró la dirección destino.");
+        return;
+      }
+
+      // Llamar a OSRM para calcular la ruta
+      const url = `https://router.project-osrm.org/route/v1/driving/${origenCoords[1]},${origenCoords[0]};${destinoCoords[1]},${destinoCoords[0]}?overview=full&geometries=geojson`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (data.routes && data.routes.length > 0) {
+        const route = data.routes[0].geometry;
+
+        if (routeLayer) {
+          map.removeLayer(routeLayer);
+        }
+
+        routeLayer = L.geoJSON(route, {
+          style: { color: 'blue', weight: 4 }
+        }).addTo(map);
+
+        // Ajustar zoom a la ruta
+        const bounds = routeLayer.getBounds();
+        map.fitBounds(bounds);
+
+        // Marcador en destino
+        L.marker(destinoCoords).addTo(map).bindPopup("Destino: " + destino).openPopup();
+      } else {
+        alert("No se pudo calcular la ruta.");
+      }
+    }
+
+    // Manejo del formulario
+    document.getElementById("routeForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const destino = document.getElementById("destino").value;
+      if (destino) {
+        showRoute(destino);
+      }
+    });
+  </script>
+</body>
+</html>

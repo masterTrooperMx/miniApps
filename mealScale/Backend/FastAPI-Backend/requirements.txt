@@ -1,0 +1,12 @@
+fastapi==0.115.0
+uvicorn[standard]
+sqlalchemy
+python-dotenv
+psycopg2-binary
+pydantic-settings
+google-auth
+python-jose[cryptography]
+email-validator
+requests
+openai
+python-multipart

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Animación SVG con MotionPath (GSAP)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: #0d1117;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    svg {
+      width: 85%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .path {
+      stroke: #00ffcc;
+      stroke-width: 5;
+      fill: none;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+    }
+
+    .ball {
+      stroke: #fff;
+      stroke-width: 2;
+      r: 12;
+    }
+
+    .ball:nth-child(2) { fill: #ffcc00; }
+    .ball:nth-child(3) { fill: #ff6699; }
+    .ball:nth-child(4) { fill: #66ccff; }
+    .ball:nth-child(5) { fill: #33ff99; }
+  </style>
+</head>
+<body>
+
+  <svg viewBox="0 0 800 400">
+    <!-- Trayectoria -->
+    <path id="mainPath" class="path" d="M50 300 C 250 100, 550 100, 750 300" />
+
+    <!-- Bolas que seguirán el trazo -->
+    <circle class="ball" />
+    <circle class="ball" />
+    <circle class="ball" />
+    <circle class="ball" />
+  </svg>
+
+  <!-- GSAP + MotionPath Plugin -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
+
+  <script>
+    gsap.registerPlugin(MotionPathPlugin);
+
+    const path = document.querySelector("#mainPath");
+    const balls = document.querySelectorAll(".ball");
+
+    // Animación para dibujar el trazo
+    gsap.to(path, {
+      duration: 3,
+      strokeDashoffset: 0,
+      ease: "power2.inOut"
+    });
+
+    // Crear una línea de tiempo para las bolas
+    const tl = gsap.timeline({ repeat: -1, repeatDelay: 1 });
+
+    balls.forEach((ball, i) => {
+      tl.to(ball, {
+        duration: 3,
+        motionPath: {
+          path: "#mainPath",
+          align: "#mainPath",
+          alignOrigin: [0.5, 0.5],
+          start: 0,
+          end: 1
+        },
+        ease: "power1.inOut"
+      }, i * 0.2); // pequeño retraso entre bolas
+    });
+  </script>
+</body>
+</html>

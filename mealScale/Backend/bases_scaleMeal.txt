@@ -1,0 +1,14 @@
+// pasos para manejar la plataforma
+docker-compose down
+docker-compose up -d
+
+http://localhost:8000
+
+
+Pasos
+Siguiente: probar login con Google desde frontend
+1️⃣ Emitir JWT propio
+2️⃣ Middleware para controlar uso por suscripción
+3️⃣ Alembic migrations
+4️⃣ Frontend example (React / HTML)
+5️⃣ Login + Logout completo

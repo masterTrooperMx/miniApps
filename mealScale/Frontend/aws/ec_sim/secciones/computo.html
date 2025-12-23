@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cómputo - AWS Builder</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../css/styles.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+  <div class="container mt-4">
+    <h4 class="text-center mb-4">🖥️ Cómputo: Elige tus componentes</h4>
+    <div id="computeBlocks" class="row g-3"></div>
+    <div class="text-center mt-4">
+      <button id="finishCompute" class="btn btn-success">Evaluar sección</button>
+      <p class="mt-2 fw-bold">Puntaje: <span id="computeScore">0</span></p>
+    </div>
+  </div>
+
+  <script>
+    const computeComponents = [
+      { id: 'ec2', name: 'EC2', desc: 'Máquinas virtuales bajo demanda', points: 10 },
+      { id: 'lambda', name: 'Lambda', desc: 'Ejecución sin servidor (Serverless)', points: 15 },
+      { id: 'ecs', name: 'ECS', desc: 'Orquestador de contenedores', points: 12 },
+      { id: 'eks', name: 'EKS', desc: 'Kubernetes administrado', points: 14 }
+    ];
+
+    let computeScore = 0;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('computeBlocks');
+      computeComponents.forEach(c => {
+        container.innerHTML += `
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm">
+              <div class="card-body text-center">
+                <h5>${c.name}</h5>
+                <p>${c.desc}</p>
+                <button class="btn btn-primary select-btn" data-id="${c.id}">Elegir</button>
+              </div>
+            </div>
+          </div>`;
+      });
+
+      document.querySelectorAll('.select-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const comp = computeComponents.find(c => c.id === e.target.dataset.id);
+          computeScore += comp.points;
+          document.getElementById('computeScore').textContent = computeScore;
+          btn.disabled = true;
+          btn.textContent = 'Seleccionado ✔';
+        });
+      });
+
+      document.getElementById('finishCompute').addEventListener('click', () => {
+        alert(`Has obtenido ${computeScore} puntos en la sección de cómputo.`);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+:root {
+    --color-bg: #FFF9F5;
+    --color-primary: #FFB7A1;   /* coral suave */
+    --color-secondary: #919F89; /* verde salvia */
+    --color-accent: #EFBC68;    /* mostaza suave */
+    --color-muted: #C8CFD6;     /* azul muy claro */
+    --color-dark: #3E4A55;      /* azul grisáceo más oscuro */
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-dark);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* HEADER */
+header {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-muted));
+    color: #fff;
+}
+
+header .logo-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+/* NAV */
+nav {
+    background-color: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.nav-small {
+    display: flex;
+    gap: .5rem;
+    overflow-x: auto;
+    padding: .5rem .75rem;
+}
+
+.nav-small button {
+    flex: 1 1 auto;
+    white-space: nowrap;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    background-color: #fff;
+    color: var(--color-dark);
+    font-size: .85rem;
+    padding-block: .4rem;
+}
+
+.nav-small button.active {
+    background-color: var(--color-primary);
+    color: #fff;
+    border-color: transparent;
+}
+
+/* Animación del icono del tema */
+.theme-icon-animate {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.theme-icon-animate.scale {
+  transform: scale(1.2);
+  opacity: 0.7;
+}
+
+.theme-toggle {
+  line-height: 1;
+}
+
+.theme-toggle .form-check-input {
+  cursor: pointer;
+}
+
+/* MAIN LAYOUT */
+main {
+    padding: 1rem .75rem 2.5rem;
+}
+
+/* Cards adaptadas a mobile */
+.card-soft {
+    border-radius: 1rem;
+    border: none;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    background-color: #ffffff;
+}
+
+.card-soft-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+    padding-bottom: .5rem;
+    margin-bottom: .75rem;
+}
+
+.badge-soft {
+    background-color: rgba(145, 159, 137, 0.15);
+    color: var(--color-secondary);
+    font-weight: 500;
+}
+
+/* Botones principales */
+.btn-primary-soft {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+    border-radius: .9rem;
+    font-weight: 600;
+}
+
+.btn-primary-soft:active,
+.btn-primary-soft:hover {
+    background-color: #ffa988;
+    border-color: #ffa988;
+}
+
+/* Campos de formulario */
+.form-control,
+.form-select {
+    border-radius: .8rem;
+    border-color: rgba(0, 0, 0, 0.06);
+    font-size: .9rem;
+}
+
+.form-label {
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--color-secondary);
+}
+
+/* ASIDE y SECTION */
+.aside-title {
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+}
+
+.result-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-dark);
+}
+
+.result-chip {
+    border-radius: .75rem;
+    padding: .35rem .7rem;
+    font-size: .8rem;
+    background-color: var(--color-muted);
+    color: var(--color-dark);
+}
+
+/* FOOTER */
+footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: #fff;
+    font-size: .75rem;
+    color: #7a8694;
+}
+
+:root {
+  /* Tema claro */
+  --theme-bg: #FFF9F5;
+  --theme-text: #3E4A55;
+  --theme-card: #ffffff;
+  --theme-border: rgba(0,0,0,0.06);
+
+  --color-primary: #FFB7A1;
+  --color-secondary: #919F89;
+  --color-accent: #EFBC68;
+  --color-muted: #C8CFD6;
+}
+
+.dark-theme {
+  /* Tema oscuro */
+  --theme-bg: #1E1F22;
+  --theme-text: #ECECEC;
+  --theme-card: #2A2C30;
+  --theme-border: rgba(255,255,255,0.12);
+
+  --color-primary: #FF9F85;
+  --color-secondary: #AFC7A5;
+  --color-accent: #DFA958;
+  --color-muted: #6A737B;
+}
+
+body {
+  background-color: var(--theme-bg);
+  color: var(--theme-text);
+}
+
+.card-soft {
+  background-color: var(--theme-card);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.form-control,
+.form-select {
+  background-color: var(--theme-card);
+  color: var(--theme-text);
+  border-color: var(--theme-border);
+}
+
+/* ---------- BREADCRUMB ARROW STYLE ---------- */
+
+/* ============================================================
+   BREADCRUMB ARROW STYLE — A10 NutriVision
+   ============================================================ */
+
+.breadcrumb-arrow {
+  display: flex;
+  background: transparent;
+  padding: 0;
+}
+
+.breadcrumb-arrow .breadcrumb-item {
+  position: relative;
+  margin-right: 1rem;
+}
+
+.breadcrumb-arrow .breadcrumb-item a,
+.breadcrumb-arrow .breadcrumb-item.active {
+  display: block;
+  padding: 8px 22px 8px 30px;
+  background: var(--theme-card);
+  border: 1px solid var(--theme-border);
+  border-radius: 4px;
+  color: var(--theme-text);
+  font-weight: 600;
+  text-decoration: none;
+  position: relative;
+}
+
+/* Flecha derecha */
+.breadcrumb-arrow .breadcrumb-item a::after,
+.breadcrumb-arrow .breadcrumb-item.active::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -15px;
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-left: 15px solid var(--theme-card);
+  z-index: 2;
+}
+
+/* Contorno flecha */
+.breadcrumb-arrow .breadcrumb-item a::before,
+.breadcrumb-arrow .breadcrumb-item.active::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -17px;
+  width: 0;
+  height: 0;
+  border-top: 21px solid transparent;
+  border-bottom: 21px solid transparent;
+  border-left: 17px solid var(--theme-border);
+  z-index: 1;
+}
+
+/* Último item no tiene flecha */
+.breadcrumb-arrow .breadcrumb-item:last-child a::after,
+.breadcrumb-arrow .breadcrumb-item:last-child a::before,
+.breadcrumb-arrow .breadcrumb-item.active:last-child::after,
+.breadcrumb-arrow .breadcrumb-item.active:last-child::before {
+  display: none;
+}
+
+/* Estado activo (flecha final) */
+.breadcrumb-arrow .breadcrumb-item.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+.breadcrumb-arrow .breadcrumb-item.active::after {
+  border-left-color: var(--color-accent);
+}
+
