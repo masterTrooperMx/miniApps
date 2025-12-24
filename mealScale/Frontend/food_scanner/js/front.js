@@ -409,7 +409,16 @@ function nutrientBar(label, value, max, unit = "") {
 
 function renderAnalyzeResult(data) {
   const summary = document.getElementById("summary");
-  if (!summary) return;
+  if (data.status === "mismatch") {
+    summary.innerHTML = `
+      <div class="alert alert-warning">
+        <strong>Ojo 👀</strong><br>
+        ${data.mensaje_usuario || data.descripcion}
+      </div>
+    `;
+    return;
+  }
+  //if (!summary) return;
 
   const v = data.valores_nutricionales;
 

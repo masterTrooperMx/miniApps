@@ -21,6 +21,10 @@ Reglas obligatorias:
 - NO incluyas explicaciones fuera del JSON.
 - NO incluyas markdown.
 - NO incluyas texto adicional.
+Si la imagen no corresponde con la descripción proporcionada:
+- No inventes información nutricional
+- Indica explícitamente que hay una discrepancia
+- Devuelve status = "mismatch"
 
 Todas las cantidades nutricionales deben expresarse por 100 gramos.
 El índice glucémico debe clasificarse como: bajo, medio o alto.

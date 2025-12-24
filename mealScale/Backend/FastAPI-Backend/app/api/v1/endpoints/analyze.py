@@ -2,7 +2,6 @@
 
 from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
 from app.core.dependencies import get_current_user
-#from app.schemas.goal import GoalEnum
 from app.services.openai_client import analyze_food_image
 from enum import Enum
 
@@ -12,7 +11,6 @@ class GoalEnum(str, Enum):
     indice_glucemico = "indice_glucemico"
     completa = "completa"
 
-# 👇 ESTA LÍNEA ES CLAVE
 router = APIRouter()
 
 @router.post("/analyze")
@@ -38,5 +36,13 @@ async def analyze_food(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+    # AQUÍ VA LA LÓGICA DE STATUS
+    if result.get("informacion_nutricional_por_100g") is None:
+        result["status"] = "mismatch"
+    else:
+        result["status"] = "ok"
+
+    # Permisos según suscripción
     result["can_save"] = user.subscription_level != "free"
+
     return result
