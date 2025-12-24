@@ -38,5 +38,5 @@ async def analyze_food(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    result["can_save"] = user.subscription != "free"
+    result["can_save"] = user.subscription_level != "free"
     return result

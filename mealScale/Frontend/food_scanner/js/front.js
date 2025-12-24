@@ -349,3 +349,137 @@ portionUnit?.addEventListener("change", () => {
     portionInput.value = "";
   }
 });
+
+  /* -----------------------------------------------------
+     IA ANALYSIS
+  ----------------------------------------------------- */
+
+async function submitAnalyze(formData) {
+  const token = localStorage.getItem("access_token");
+
+  const resp = await fetch("http://localhost:8000/api/v1/analyze", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: formData
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json();
+    throw new Error(err.detail || "Error en análisis");
+  }
+
+  return await resp.json();
+}
+
+function confidenceBadge(level) {
+  switch (level) {
+    case "alta": return "bg-success";
+    case "media": return "bg-warning text-dark";
+    default: return "bg-danger";
+  }
+}
+
+function igBadge(level) {
+  switch (level) {
+    case "bajo":
+      return "bg-success";
+    case "medio":
+      return "bg-warning text-dark";
+    case "alto":
+      return "bg-danger";
+    default:
+      return "bg-secondary";
+  }
+}
+
+function nutrientBar(label, value, max, unit = "") {
+  const percent = Math.min((value / max) * 100, 100);
+
+  return `
+    <div class="mb-2">
+      <small>${label}: <strong>${value}${unit}</strong></small>
+      <div class="progress">
+        <div class="progress-bar" style="width:${percent}%"></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAnalyzeResult(data) {
+  const summary = document.getElementById("summary");
+  if (!summary) return;
+
+  const v = data.valores_nutricionales;
+
+  summary.innerHTML = `
+    <div class="d-flex align-items-center justify-content-between">
+      <div>
+        <h5 class="mb-1">${data.alimento}</h5>
+        <small class="text-muted">
+          Cantidad analizada: ${data.cantidad_g} g · IG: ${data.indice_glucemico}
+        </small>
+      </div>
+
+      <span class="badge ${igBadge(data.indice_glucemico)}">
+        IG ${data.indice_glucemico}
+      </span>
+    </div>
+
+    ${nutrientBar("Calorías", v.calorias_kcal, 800, " kcal")}
+    ${nutrientBar("Proteína", v.proteinas_g, 50, " g")}
+    ${nutrientBar("Grasas", v.grasas_g, 70, " g")}
+    ${nutrientBar("Carbohidratos", v.carbohidratos_g, 300, " g")}
+    ${nutrientBar("Fibra", v.fibra_g, 40, " g")}
+    ${nutrientBar("Azúcares", v.azucares_g, 50, " g")}
+    ${nutrientBar("Sodio", v.sodio_mg, 2300, " mg")}
+
+    ${
+      data.can_save
+        ? `<button class="btn btn-success w-100 mt-3">
+             Guardar en historial
+           </button>`
+        : `<p class="small text-muted mt-3 mb-0">
+             Disponible solo con suscripción
+           </p>`
+    }
+  `;
+}
+
+document.getElementById("analyzeBtn")?.addEventListener("click", async () => {
+
+  const photoInput = document.getElementById("photo");
+  const dishNameInput = document.getElementById("dishName");
+  const goalSelect = document.getElementById("goal");
+
+  if (!photoInput || !photoInput.files || !photoInput.files[0]) {
+    alert("Primero toma o selecciona una foto del platillo");
+    return;
+  }
+
+  const formData = new FormData();
+
+  // Imagen (obligatoria)
+  formData.append("image", photoInput.files[0]);
+
+  // Descripción (opcional)
+  if (dishNameInput && dishNameInput.value.trim() !== "") {
+    formData.append("description", dishNameInput.value.trim());
+  }
+
+  // Objetivo
+  if (goalSelect) {
+    formData.append("goal", goalSelect.value);
+  }
+
+  // 🔜 (más adelante: amount y unit)
+
+  try {
+    const data = await submitAnalyze(formData);
+    renderAnalyzeResult(data);
+  } catch (err) {
+    alert(err.message || "Error al analizar el platillo");
+  }
+});
+
