@@ -20,6 +20,7 @@ async def analyze_food(
     goal: GoalEnum = Form(...),
     amount: float | None = Form(None),
     unit: str | None = Form(None),
+    use_detected: bool = Form(False),
     user=Depends(get_current_user)
 ):
     grams = None
@@ -29,20 +30,27 @@ async def analyze_food(
     try:
         result = await analyze_food_image(
             image=image,
-            description=description,
+            description=description if use_detected else description,
             goal=goal.value,
             grams=grams
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    # AQUÍ VA LA LÓGICA DE STATUS
+    # Determinar status semántico
     if result.get("informacion_nutricional_por_100g") is None:
-        result["status"] = "mismatch"
+        descripcion = (result.get("descripcion") or "").lower()
+
+        if any(word in descripcion for word in [
+            "no es comida",
+            "no contiene alimento",
+            "no se observa alimento",
+            "persona",
+            "objeto",
+            "paisaje"
+        ]):
+            result["status"] = "invalid_image"
+        else:
+            result["status"] = "mismatch"
     else:
         result["status"] = "ok"
-
-    # Permisos según suscripción
-    result["can_save"] = user.subscription_level != "free"
-
-    return result

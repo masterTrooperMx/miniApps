@@ -407,17 +407,60 @@ function nutrientBar(label, value, max, unit = "") {
   `;
 }
 
+let statusModalTimer = null;
+
+function showStatusModal(title, message) {
+  const modalEl = document.getElementById("statusModal");
+  const modal = new bootstrap.Modal(modalEl);
+
+  document.getElementById("statusModalTitle").innerText = title;
+  document.getElementById("statusModalBody").innerHTML = message;
+
+  modal.show();
+
+  // Auto cerrar en 30 segundos
+  clearTimeout(statusModalTimer);
+  statusModalTimer = setTimeout(() => {
+    modal.hide();
+  }, 30000);
+}
+
 function renderAnalyzeResult(data) {
   const summary = document.getElementById("summary");
+  const useDetectedBtn = document.getElementById("useDetectedBtn");
+  useDetectedBtn.style.display = "none";
+
   if (data.status === "mismatch") {
+    showStatusModal(
+      "Imagen y descripción no coinciden",
+      `
+        <p>${data.descripcion}</p>
+        <p class="mb-0">
+          ¿Deseas continuar usando el alimento detectado por la imagen?
+        </p>
+      `
+    );
+
+    // Mostrar botón slide
+    useDetectedBtn.style.display = "block";
+    useDetectedBtn.classList.add("animate-slide-in");
     summary.innerHTML = `
       <div class="alert alert-warning">
-        <strong>Ojo 👀</strong><br>
-        ${data.mensaje_usuario || data.descripcion}
+        <strong>⚠️ Imagen y descripción no coinciden</strong><br>
+        ${data.descripcion}
+        <div class="mt-2">
+          <button class="btn btn-outline-primary btn-sm">
+            Usar lo detectado
+          </button>
+          <button class="btn btn-outline-secondary btn-sm">
+            Tomar otra foto
+          </button>
+        </div>
       </div>
     `;
     return;
   }
+    
   //if (!summary) return;
 
   const v = data.valores_nutricionales;
@@ -492,3 +535,19 @@ document.getElementById("analyzeBtn")?.addEventListener("click", async () => {
   }
 });
 
+document.getElementById("useDetectedBtn").addEventListener("click", async () => {
+
+  const photoInput = document.getElementById("photo");
+
+  const formData = new FormData();
+  formData.append("image", photoInput.files[0]);
+  formData.append("goal", document.getElementById("goal").value);
+  formData.append("use_detected", "true");
+
+  try {
+    const data = await submitAnalyze(formData);
+    renderAnalyzeResult(data);
+  } catch (err) {
+    showStatusModal("Error", err.message);
+  }
+});

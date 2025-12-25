@@ -25,6 +25,10 @@ Si la imagen no corresponde con la descripción proporcionada:
 - No inventes información nutricional
 - Indica explícitamente que hay una discrepancia
 - Devuelve status = "mismatch"
+Si la imagen NO contiene un alimento:
+- Devuelve status_sugerido = "invalid_image"
+- No devuelvas información nutricional
+- Explica brevemente qué aparece en la imagen
 
 Todas las cantidades nutricionales deben expresarse por 100 gramos.
 El índice glucémico debe clasificarse como: bajo, medio o alto.
