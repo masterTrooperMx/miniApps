@@ -1,7 +1,12 @@
-// camera.js
+// js/camera.js
 
 let stream = null;
 let mode = "idle";
+let initialized = false;
+
+/* -------------------------
+   Helpers
+------------------------- */
 
 async function hasCamera() {
   if (!navigator.mediaDevices?.getUserMedia) return false;
@@ -14,25 +19,55 @@ async function hasCamera() {
   }
 }
 
-async function openCamera(cameraVideo, cameraContainer, previewContainer, entryBtn, actionBtn, photoInput) {
+function stopCamera() {
+  if (stream) {
+    stream.getTracks().forEach(t => t.stop());
+    stream = null;
+  }
+}
+
+/* -------------------------
+   Camera actions
+------------------------- */
+
+async function openCamera(
+  cameraVideo,
+  cameraContainer,
+  previewContainer,
+  entryBtn,
+  actionBtn,
+  photoInput
+) {
+  stopCamera();
+
   try {
     stream = await navigator.mediaDevices.getUserMedia({ video: true });
     updateBreadcrumb(["Inicio", "Analizar platillo", "Capturando foto"]);
 
     cameraVideo.srcObject = stream;
+    cameraVideo.play();
+
     cameraContainer.style.display = "block";
     previewContainer.style.display = "none";
     entryBtn.style.display = "none";
+    actionBtn.style.display = "block";
 
-    mode = "camera";
     actionBtn.innerHTML = `<i class="bi bi-camera-fill"></i> Tomar foto`;
+    mode = "camera";
   } catch (err) {
     console.warn("No se pudo acceder a la cámara:", err);
     photoInput.click();
   }
 }
 
-function capturePhoto(cameraVideo, previewImage, cameraContainer, previewContainer, actionBtnPreview, photoInput) {
+function capturePhoto(
+  cameraVideo,
+  previewImage,
+  cameraContainer,
+  previewContainer,
+  actionBtnPreview,
+  photoInput
+) {
   const canvas = document.createElement("canvas");
   canvas.width = cameraVideo.videoWidth;
   canvas.height = cameraVideo.videoHeight;
@@ -40,18 +75,17 @@ function capturePhoto(cameraVideo, previewImage, cameraContainer, previewContain
 
   const imgData = canvas.toDataURL("image/png");
   previewImage.src = imgData;
+
   updateBreadcrumb(["Inicio", "Analizar platillo", "Vista previa"]);
 
-  if (stream) {
-    stream.getTracks().forEach(t => t.stop());
-    stream = null;
-  }
+  stopCamera();
 
   cameraContainer.style.display = "none";
   previewContainer.style.display = "block";
-  mode = "preview";
+  actionBtnPreview.style.display = "block";
 
   actionBtnPreview.innerHTML = `<i class="bi bi-arrow-counterclockwise"></i> Tomar otra foto`;
+  mode = "preview";
 
   fetch(imgData)
     .then(res => res.blob())
@@ -63,14 +97,37 @@ function capturePhoto(cameraVideo, previewImage, cameraContainer, previewContain
     });
 }
 
-function retakePhoto(cameraContainer, previewContainer, actionBtn) {
+function resetCameraFlow(
+  cameraVideo,
+  cameraContainer,
+  previewContainer,
+  previewImage,
+  entryBtn,
+  actionBtn,
+  actionBtnPreview,
+  photoInput
+) {
+  stopCamera();
+
+  previewImage.src = "";
+  photoInput.value = "";
+
+  cameraContainer.style.display = "none";
   previewContainer.style.display = "none";
-  cameraContainer.style.display = "block";
-  mode = "camera";
-  actionBtn.innerHTML = `<i class="bi bi-camera-fill"></i> Tomar foto`;
+  actionBtn.style.display = "none";
+  actionBtnPreview.style.display = "none";
+  entryBtn.style.display = "block";
+
+  mode = "idle";
 }
 
+/* -------------------------
+   Init (solo una vez)
+------------------------- */
+
 function initCamera() {
+  if (initialized) return;
+
   const entryBtn = document.getElementById("start-camera-btn");
   const actionBtn = document.getElementById("action-btn");
   const actionBtnPreview = document.getElementById("action-btn-preview");
@@ -84,19 +141,50 @@ function initCamera() {
 
   entryBtn.addEventListener("click", async () => {
     const ok = await hasCamera();
-    if (ok) openCamera(cameraVideo, cameraContainer, previewContainer, entryBtn, actionBtn, photoInput);
-    else photoInput.click();
+    if (ok) {
+      openCamera(
+        cameraVideo,
+        cameraContainer,
+        previewContainer,
+        entryBtn,
+        actionBtn,
+        photoInput
+      );
+    } else {
+      photoInput.click();
+    }
   });
 
   actionBtn.addEventListener("click", () => {
     if (mode === "camera") {
-      capturePhoto(cameraVideo, previewImage, cameraContainer, previewContainer, actionBtnPreview, photoInput);
+      capturePhoto(
+        cameraVideo,
+        previewImage,
+        cameraContainer,
+        previewContainer,
+        actionBtnPreview,
+        photoInput
+      );
     }
   });
 
   actionBtnPreview.addEventListener("click", () => {
-    retakePhoto(cameraContainer, previewContainer, actionBtn);
+    resetCameraFlow(
+      cameraVideo,
+      cameraContainer,
+      previewContainer,
+      previewImage,
+      entryBtn,
+      actionBtn,
+      actionBtnPreview,
+      photoInput
+    );
+
+    if (window.resetSummaryUI) {
+      window.resetSummaryUI();
+    }
   });
+
 
   photoInput.addEventListener("change", () => {
     if (photoInput.files?.[0]) {
@@ -104,10 +192,12 @@ function initCamera() {
       previewContainer.style.display = "block";
       cameraContainer.style.display = "none";
       entryBtn.style.display = "none";
+      actionBtnPreview.style.display = "block";
       mode = "preview";
     }
   });
 
+  initialized = true;
   console.log("Camera initialized");
 }
 

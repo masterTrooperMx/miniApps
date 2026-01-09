@@ -57,9 +57,57 @@ function updateBreadcrumb(steps) {
   });
 }
 
+// reset dinamico
+function resetSummaryUI() {
+  const summary = document.getElementById("summary");
+  if (!summary) return;
+
+  // Limpiar badges
+  const badgeIds = [
+    "badge-calorias",
+    "badge-ig",
+    "badge-proteina",
+    "badge-fibra",
+    "badge-grasa"
+  ];
+
+  badgeIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = el.textContent.split(":")[0] + ": —";
+    if (el) el.className = "badge px-3 py-2";
+  });
+
+  // Limpiar progress bars
+  const progressIds = [
+    "progress-calorias",
+    "progress-ig",
+    "progress-proteina",
+    "progress-fibra",
+    "progress-grasa"
+  ];
+
+  progressIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.width = "0%";
+      el.className = "progress-bar";
+    }
+  });
+
+  // Ocultar botón "usar detectado"
+  const useDetectedBtn = document.getElementById("useDetectedBtn");
+  if (useDetectedBtn) {
+    useDetectedBtn.style.display = "none";
+  }
+
+  // Limpiar estado global
+  window.lastAnalyzeFormData = null;
+}
+
 /* -----------------------------------------------------
    EXPONER FUNCIONES
 ----------------------------------------------------- */
 
 window.updateMetric = updateMetric;
 window.updateBreadcrumb = updateBreadcrumb;
+window.resetSummaryUI = resetSummaryUI;

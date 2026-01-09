@@ -1,6 +1,13 @@
 //let lastAnalyzeFormData = null;
 const portionInput = document.getElementById("portionAmount");
 const portionUnit = document.getElementById("portionUnit");
+const retryBtn = document.getElementById("retryBtn");
+
+  if (retryBtn) {
+    retryBtn.addEventListener("click", () => {
+      resetAnalyzeFlow();
+    });
+  }
 
   document.addEventListener("DOMContentLoaded", () => {
     const user = getCurrentUser();
@@ -42,6 +49,41 @@ const portionUnit = document.getElementById("portionUnit");
       portionInput.value = "";
     }
   });
+
+  function resetAnalyzeFlow() {
+    // 1️⃣ Limpiar estado
+    window.lastAnalyzeFormData = null;
+
+    // 2️⃣ Limpiar preview
+    const preview = document.getElementById("photoPreview");
+    if (preview) {
+      preview.src = "";
+      preview.classList.add("d-none");
+    }
+
+    // 3️⃣ Ocultar resultados
+    const summary = document.getElementById("summary");
+    if (summary) {
+      summary.innerHTML = "";
+    }
+
+    // 4️⃣ Ocultar botones especiales
+    const useDetectedBtn = document.getElementById("useDetectedBtn");
+    if (useDetectedBtn) {
+      useDetectedBtn.style.display = "none";
+    }
+
+    // 5️⃣ Rehabilitar botón de cámara
+    const startBtn = document.getElementById("start-camera-btn");
+    if (startBtn) {
+      startBtn.disabled = false;
+    }
+
+    // 6️⃣ Reiniciar cámara
+    if (window.initCamera) {
+      window.initCamera();
+    }
+  }
 
   document.addEventListener("DOMContentLoaded", () => {
     initCamera();
