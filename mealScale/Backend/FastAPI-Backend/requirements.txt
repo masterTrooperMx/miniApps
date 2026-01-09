@@ -10,3 +10,4 @@ email-validator
 requests
 openai
 python-multipart
+logging

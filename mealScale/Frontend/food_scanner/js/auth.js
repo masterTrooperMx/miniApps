@@ -1,11 +1,41 @@
 const API_URL = "http://localhost:8000/api/v1";
 
+/* -----------------------------------------------------
+   AUTH HELPERS
+----------------------------------------------------- */
+
+function getCurrentUser() {
+  const token = localStorage.getItem("access_token");
+  if (!token) return null;
+
+  try {
+    return JSON.parse(atob(token.split(".")[1]));
+  } catch (e) {
+    console.error("Invalid token", e);
+    return null;
+  }
+}
+
+function saveSession(data) {
+  localStorage.setItem("access_token", data.access_token);
+}
+
+function redirectUser() {
+  window.location.href = "/base.html";
+}
+
+/* -----------------------------------------------------
+   LOGIN (EMAIL / PASSWORD) – opcional
+----------------------------------------------------- */
+
 async function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("email")?.value;
+  const password = document.getElementById("password")?.value;
   const errorBox = document.getElementById("error");
 
-  errorBox.classList.add("d-none");
+  if (!email || !password) return;
+
+  errorBox?.classList.add("d-none");
 
   try {
     const resp = await fetch(`${API_URL}/auth/login`, {
@@ -18,19 +48,22 @@ async function login() {
 
     const data = await resp.json();
     saveSession(data);
-    //redirectUser(data.user);
     redirectUser();
 
   } catch (err) {
-    errorBox.textContent = err.message;
-    errorBox.classList.remove("d-none");
+    if (errorBox) {
+      errorBox.textContent = err.message;
+      errorBox.classList.remove("d-none");
+    }
   }
 }
 
-async function loginWithGoogle() {
-  // Este token normalmente lo obtienes del Google SDK
-  const googleIdToken = prompt("Pega aquí el Google ID Token (demo)");
+/* -----------------------------------------------------
+   GOOGLE LOGIN
+----------------------------------------------------- */
 
+async function handleGoogleLogin(response) {
+  const googleIdToken = response.credential;
   if (!googleIdToken) return;
 
   try {
@@ -40,62 +73,13 @@ async function loginWithGoogle() {
       body: JSON.stringify({ id_token: googleIdToken })
     });
 
-    if (!resp.ok) throw new Error("Error con Google login");
-
-    const data = await resp.json();
-    saveSession(data);
-    //redirectUser(data.user);
-    redirectUser();
-
-  } catch (err) {
-    alert(err.message);
-  }
-}
-
-function saveSession(data) {
-  localStorage.setItem("access_token", data.access_token);
-  //localStorage.setItem("user", JSON.stringify(data.user));
-}
-
-//function redirectUser(user) {
-function redirectUser() {
-  // Ejemplo de control por suscripción
-  //if (user.subscription === "free") {
-  //  window.location.href = "/app.html";
-  //} else {
-  //  window.location.href = "/app.html";
-  //}
-  window.location.href = "/base.html";
-}
-
-async function handleGoogleLogin(response) {
-  // Este token es el JWT de Google
-  const googleIdToken = response.credential;
-
-  try {
-    const resp = await fetch(`${API_URL}/auth/google`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        id_token: googleIdToken
-      })
-    });
-
     if (!resp.ok) {
       throw new Error("Error al autenticar con Google");
     }
 
     const data = await resp.json();
-
-    // Guardar sesión propia
-    //localStorage.setItem("access_token", data.access_token);
-    //localStorage.setItem("user", JSON.stringify(data.user));
-    localStorage.setItem("access_token", data.access_token);
-
-    // Redirigir
-    window.location.href = "/base.html";
+    saveSession(data);
+    redirectUser();
 
   } catch (err) {
     console.error(err);
@@ -103,15 +87,20 @@ async function handleGoogleLogin(response) {
   }
 }
 
-function parseJwt(token) {
-  try {
-    return JSON.parse(atob(token.split(".")[1]));
-  } catch {
-    return null;
+/* -----------------------------------------------------
+   INIT
+----------------------------------------------------- */
+
+function initAuth() {
+  const user = getCurrentUser();
+
+  if (user) {
+    console.log("Authenticated:", user.email, user.subscription);
+  } else {
+    console.log("No authenticated user");
   }
 }
 
-const token = localStorage.getItem("access_token");
-const user = token ? parseJwt(token) : null;
-
-console.log(user.email, user.subscription);
+window.initAuth = initAuth;
+window.getCurrentUser = getCurrentUser;
+window.handleGoogleLogin = handleGoogleLogin;
