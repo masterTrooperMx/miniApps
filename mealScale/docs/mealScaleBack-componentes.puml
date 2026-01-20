@@ -1,0 +1,10 @@
+@startuml
+package "FastAPI Backend" {
+  [main.py] --> [API Router]
+  [API Router] --> [Endpoints]
+  [Endpoints] --> [Schemas]
+  [Endpoints] --> [Services]
+  [Services] --> [DB]
+  [Services] --> [External APIs]
+}
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+actor Usuario
+participant "UI (HTML/JS)" as UI
+participant "Backend API" as API
+
+Usuario -> UI : Interactúa
+UI -> API : fetch()/POST
+API --> UI : JSON response
+UI --> Usuario : Render resultados
+@enduml
