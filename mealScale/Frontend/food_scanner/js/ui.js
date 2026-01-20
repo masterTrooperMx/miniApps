@@ -1,6 +1,32 @@
 /* -----------------------------------------------------
    MÉTRICAS NUTRICIONALES (badges + barras dinámicas)
 ----------------------------------------------------- */
+let isAnalyzing = false;
+
+function setAnalyzingState(active) {
+  isAnalyzing = active;
+
+  const overlay = document.getElementById("analyzingOverlay");
+  if (overlay) {
+    overlay.classList.toggle("d-none", !active);
+  }
+
+  // Inputs a bloquear
+  const controls = [
+    "start-camera-btn",
+    "action-btn",
+    "action-btn-preview",
+    "analyzeBtn",
+    "goal",
+    "dishName",
+    "photo"
+  ];
+
+  controls.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = active;
+  });
+}
 
 function updateMetric(idBadge, idProgress, value, minOk, maxOk) {
   const badge = document.getElementById(idBadge);
@@ -57,12 +83,37 @@ function updateBreadcrumb(steps) {
   });
 }
 
-// reset dinamico
-function resetSummaryUI() {
+// reset dinamico de estadisticas
+function resetSummaryUI(animated = true) {
   const summary = document.getElementById("summary");
   if (!summary) return;
 
-  // Limpiar badges
+  if (animated) {
+    // Iniciar fade out
+    summary.classList.remove("fade-slide-in");
+    summary.classList.add("fade-slide-out");
+
+    // Esperar animación antes de limpiar
+    setTimeout(() => {
+      clearSummaryContent();
+      summary.classList.remove("fade-slide-out");
+      summary.classList.add("fade-slide-in");
+    }, 300);
+  } else {
+    clearSummaryContent();
+  }
+
+  // Estado global
+  window.lastAnalyzeFormData = null;
+
+  // Ocultar botón "usar detectado"
+  const useDetectedBtn = document.getElementById("useDetectedBtn");
+  if (useDetectedBtn) {
+    useDetectedBtn.style.display = "none";
+  }
+}
+
+function clearSummaryContent() {
   const badgeIds = [
     "badge-calorias",
     "badge-ig",
@@ -73,11 +124,12 @@ function resetSummaryUI() {
 
   badgeIds.forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.textContent = el.textContent.split(":")[0] + ": —";
-    if (el) el.className = "badge px-3 py-2";
+    if (el) {
+      el.textContent = el.textContent.split(":")[0] + ": —";
+      el.className = "badge px-3 py-2";
+    }
   });
 
-  // Limpiar progress bars
   const progressIds = [
     "progress-calorias",
     "progress-ig",
@@ -93,15 +145,6 @@ function resetSummaryUI() {
       el.className = "progress-bar";
     }
   });
-
-  // Ocultar botón "usar detectado"
-  const useDetectedBtn = document.getElementById("useDetectedBtn");
-  if (useDetectedBtn) {
-    useDetectedBtn.style.display = "none";
-  }
-
-  // Limpiar estado global
-  window.lastAnalyzeFormData = null;
 }
 
 /* -----------------------------------------------------
@@ -111,3 +154,4 @@ function resetSummaryUI() {
 window.updateMetric = updateMetric;
 window.updateBreadcrumb = updateBreadcrumb;
 window.resetSummaryUI = resetSummaryUI;
+window.setAnalyzingState = setAnalyzingState;

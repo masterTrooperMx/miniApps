@@ -181,7 +181,7 @@ function initCamera() {
     );
 
     if (window.resetSummaryUI) {
-      window.resetSummaryUI();
+      window.resetSummaryUI(true);
     }
   });
 

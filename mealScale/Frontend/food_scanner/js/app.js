@@ -1,4 +1,4 @@
-//let lastAnalyzeFormData = null;
+// js/app.js
 const portionInput = document.getElementById("portionAmount");
 const portionUnit = document.getElementById("portionUnit");
 const retryBtn = document.getElementById("retryBtn");

@@ -1,0 +1,40 @@
+./Frontend/
+├── aws
+│   ├── css
+│   ├── css_display.html
+│   ├── ec_sim
+│   │   ├── css
+│   │   │   └── styles.css
+│   │   ├── index.html
+│   │   ├── js
+│   │   │   └── game.js
+│   │   ├── play.html
+│   │   └── secciones
+│   │       └── computo.html
+│   ├── img
+│   └── js
+├── ejem
+│   └── apis
+│       ├── anima1.html
+│       ├── anima2.html
+│       └── openStMap_ejem.html
+└── food_scanner
+    ├── app.html
+    ├── base.html
+    ├── css
+    │   └── style.css
+    ├── google-login-test.html
+    ├── icons.html
+    ├── img
+    │   └── ms_logo.svg
+    ├── js
+    │   ├── analyze.js
+    │   ├── app.js
+    │   ├── auth.js
+    │   ├── camera.js
+    │   ├── front.js
+    │   ├── theme.js
+    │   └── ui.js
+    └── login.html
+
+14 directories, 23 files

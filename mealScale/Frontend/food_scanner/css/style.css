@@ -170,6 +170,11 @@ main {
     color: var(--color-dark);
 }
 
+.logo {
+  width: 60px;
+  height: 18px;
+}
+
 /* FOOTER */
 footer {
     border-top: 1px solid rgba(0, 0, 0, 0.05);
@@ -297,5 +302,41 @@ body {
 }
 .breadcrumb-arrow .breadcrumb-item.active::after {
   border-left-color: var(--color-accent);
+}
+
+/* Animación de salida */
+.fade-slide-out {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+/* Animación de entrada */
+.fade-slide-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+/* Estado inicial visible */
+.summary-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.analyzing-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(2px);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 200ms ease;
+}
+
+body.dark-theme .analyzing-overlay {
+  background: rgba(20, 20, 20, 0.85);
 }
 

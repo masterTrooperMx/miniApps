@@ -1,0 +1,12 @@
+@startuml
+actor Usuario
+rectangle "Frontend (food_scanner)" as FE
+rectangle "Backend API (FastAPI)" as BE
+
+
+Usuario -> FE : Ingresa datos / usa cámara
+FE -> BE : Request HTTP (JSON)
+BE -> BE : Validar / Procesar
+BE --> FE : Response JSON
+FE --> Usuario : Mostrar resultados
+@enduml

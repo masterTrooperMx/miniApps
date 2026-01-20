@@ -1,0 +1,36 @@
+./Backend/
+├── bases_scaleMeal.txt
+└── FastAPI-Backend
+    ├── app
+    │   ├── api
+    │   │   └── v1
+    │   │       ├── endpoints
+    │   │       │   ├── analyze.py
+    │   │       │   ├── auth.py
+    │   │       │   ├── protected.py
+    │   │       │   └── users.py
+    │   │       ├── router.py
+    │   │       └── schemas
+    │   │           ├── auth.py
+    │   │           └── user.py
+    │   ├── core
+    │   │   ├── config.py
+    │   │   ├── dependencies.py
+    │   │   ├── permissions.py
+    │   │   └── security.py
+    │   ├── db
+    │   │   ├── base.py
+    │   │   ├── models
+    │   │   │   ├── ___init___.py
+    │   │   │   └── user.py
+    │   │   └── session.py
+    │   ├── main.py
+    │   └── services
+    │       ├── google_auth.py
+    │       ├── openai_client.py
+    │       └── user_service.py
+    ├── docker-compose.yml
+    ├── Dockerfile
+    └── requirements.txt
+
+10 directories, 23 files

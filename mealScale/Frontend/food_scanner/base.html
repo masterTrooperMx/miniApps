@@ -27,7 +27,7 @@
     <div class="container-fluid px-3 d-flex align-items-center justify-content-between">
       <div class="d-flex align-items-center gap-2">
         <div class="logo-badge">
-          <span>IA</span>
+          <img src="img/ms_logo.svg" class="logo" />
         </div>
         <div>
           <h1 class="h6 mb-0">NutriVision</h1>
@@ -220,7 +220,7 @@
             </div>
 
             <!-- RESUMEN PRINCIPAL -->
-            <div id="summary" class="d-flex flex-column gap-3">
+            <div id="summary" class="d-flex flex-column gap-3 summary-visible">
 
               <div>
                 <span class="badge px-3 py-2" id="badge-calorias">Calorías: —</span>
@@ -311,6 +311,14 @@
           </div>
         </section>
 
+      </div>
+    </div>
+    <!-- Overlay de análisis -->
+    <div id="analyzingOverlay" class="analyzing-overlay d-none">
+      <div class="text-center">
+        <div class="spinner-border text-primary mb-3" role="status"></div>
+        <div class="fw-semibold">Analizando platillo…</div>
+        <div class="text-muted small">Esto puede tardar unos segundos</div>
       </div>
     </div>
   </main>

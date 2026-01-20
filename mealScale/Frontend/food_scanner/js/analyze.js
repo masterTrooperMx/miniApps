@@ -6,23 +6,35 @@ let lastAnalyzeFormData = null;
 let statusModalTimer = null;
 
 async function submitAnalyze(formData) {
-  const token = localStorage.getItem("access_token");
+  if (isAnalyzing) return;
 
-  const resp = await fetch("http://localhost:8000/api/v1/analyze", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
-    body: formData
-  });
+  setAnalyzingState(true);
+  try {
+    const token = localStorage.getItem("access_token");
 
-  if (!resp.ok) {
-    const err = await resp.json();
-    throw new Error(err.detail || "Error en análisis");
+    const resp = await fetch("http://localhost:8000/api/v1/analyze", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: formData
+    });
+
+    const data = await resp.json();
+    renderAnalyzeResult(data);
+  } catch (err) {
+//  if (!resp.ok) {
+//      const err = await resp.json();
+//      throw new Error(err.detail || "Error en análisis");
+//  }
+    showStatusModal(
+      "Error", 
+      "No se pudo completar el analisis. Intenta nuevamente.");
+  } finally {
+    setAnalyzingState(false);
   }
-
   //console.log(resp);
-  return await resp.json();
+  //return await resp.json();
 }
 
 function igBadge(level) {
