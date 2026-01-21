@@ -1,6 +1,7 @@
 /* -----------------------------------------------------
    IA ANALYSIS
 ----------------------------------------------------- */
+console.log("ANALYZE.JS VERSION 2026-01-20 23:15");
 
 let lastAnalyzeFormData = null;
 let statusModalTimer = null;
@@ -9,6 +10,7 @@ async function submitAnalyze(formData) {
   if (isAnalyzing) return;
 
   setAnalyzingState(true);
+
   try {
     const token = localStorage.getItem("access_token");
 
@@ -20,22 +22,27 @@ async function submitAnalyze(formData) {
       body: formData
     });
 
+    if (!resp.ok) {
+      throw new Error("Error en la respuesta del servidor");
+    }
+
     const data = await resp.json();
+
+    console.log("ANALYZE RESPONSE TYPE:", typeof data, data);
+
     renderAnalyzeResult(data);
+
   } catch (err) {
-//  if (!resp.ok) {
-//      const err = await resp.json();
-//      throw new Error(err.detail || "Error en análisis");
-//  }
+    console.error("Analyze error:", err);
     showStatusModal(
-      "Error", 
-      "No se pudo completar el analisis. Intenta nuevamente.");
+      "Error",
+      "No se pudo completar el análisis. Intenta nuevamente."
+    );
   } finally {
     setAnalyzingState(false);
   }
-  //console.log(resp);
-  //return await resp.json();
 }
+
 
 function igBadge(level) {
   switch (level) {
@@ -185,15 +192,7 @@ function initAnalyze() {
       }
 
       lastAnalyzeFormData = formData;
-
-      try {
-        const data = await submitAnalyze(formData);
-        console.log("ANALYZE RESPONSE TYPE:", typeof data, data);
-        renderAnalyzeResult(data);
-      } catch (err) {
-        showStatusModal("Error", err.message);
-        return;
-      }
+      submitAnalyze(formData);
     });
   }
 
@@ -207,13 +206,7 @@ function initAnalyze() {
       }
 
       retryFormData.append("use_detected", "true");
-
-      try {
-        const data = await submitAnalyze(retryFormData);
-        renderAnalyzeResult(data);
-      } catch (err) {
-        showStatusModal("Error", err.message);
-      }
+      submitAnalyze(retryFormData);
     });
   }
 

@@ -49,6 +49,7 @@ def encode_image(file):
 async def analyze_food_image(image, description: str, goal: str, grams: float | None):
     try:
         image_b64 = encode_image(image)
+        image_data_url = f"data:image/jpeg;base64,{image_b64}"
     except Exception as e:
         return {
             "status": "error",
@@ -62,6 +63,7 @@ Cantidad en gramos: {grams if grams else "100"}
 """
 
     try:
+        logger.info("Sending image to OpenAI (base64 length=%s)", len(image_b64))
         response = client.responses.create(
             model="gpt-4.1-mini",
             input=[
@@ -70,7 +72,7 @@ Cantidad en gramos: {grams if grams else "100"}
                     "role": "user",
                     "content": [
                         {"type": "input_text", "text": user_prompt},
-                        {"type": "input_image", "image_base64": image_b64},
+                        {"type": "input_image", "image_url": image_data_url},
                     ],
                 },
             ],
@@ -83,6 +85,7 @@ Cantidad en gramos: {grams if grams else "100"}
             "status": "error",
             "descripcion": "Error al consultar el motor de análisis"
         }
+        raise
 
     ai_text = response.output_text.strip()
     logger.info("Raw AI result: %s", ai_text)

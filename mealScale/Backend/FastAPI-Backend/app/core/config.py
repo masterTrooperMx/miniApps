@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRE_MINUTES: int = 1440
 
+    OPENAI_API_KEY: str
     class Config:
         env_file = ".env"
 
