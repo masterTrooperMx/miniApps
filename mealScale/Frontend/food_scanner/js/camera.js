@@ -136,6 +136,24 @@ function initCamera() {
   const cameraVideo = document.getElementById("camera-video");
   const previewImage = document.getElementById("preview-image");
   const photoInput = document.getElementById("photo");
+  const invalidRetryBtn = document.getElementById("invalidRetryBtn");
+
+  if (invalidRetryBtn) {
+    invalidRetryBtn.addEventListener("click", () => {
+      if (window.resetCameraFlow) {
+        window.resetCameraFlow();
+      }
+      if (window.resetSummaryUI) {
+        window.resetSummaryUI(true);
+      }
+      if (window.initCamera) {
+        window.initCamera();
+      }
+
+      const invalidPanel = document.getElementById("invalidImagePanel");
+      if (invalidPanel) invalidPanel.classList.add("d-none");
+    });
+  }
 
   if (!entryBtn || !actionBtn || !actionBtnPreview) return;
 

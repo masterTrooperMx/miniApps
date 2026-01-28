@@ -84,6 +84,24 @@ function showStatusModal(title, message) {
 function renderAnalyzeResult(data) {
   const summary = document.getElementById("summary");
   const useDetectedBtn = document.getElementById("useDetectedBtn");
+  const invalidPanel = document.getElementById("invalidImagePanel");
+  const invalidMsg = document.getElementById("invalidImageMessage");
+  console.log("RENDER DATA", data);
+
+  resetSummaryUI(false);
+
+  if (invalidPanel) invalidPanel.classList.add("d-none");
+
+  // CASO: imagen no válida
+  if (data.status === "invalid_image") {
+    if (invalidPanel) {
+      if (invalidMsg && data.descripcion) {
+        invalidMsg.textContent = data.descripcion;
+      }
+      invalidPanel.classList.remove("d-none");
+    }
+    return;
+  }
 
   if (useDetectedBtn) useDetectedBtn.style.display = "none";
   if (!summary) return;
@@ -132,7 +150,7 @@ function renderAnalyzeResult(data) {
     return;
   }
 
-  // ✅ OK
+  // OK
   const v = data.valores_nutricionales;
 
   summary.innerHTML = `
